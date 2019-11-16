@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "alias": "game-picker",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@now/next"
+    },
+    {
+      "src": "/server/index.ts",
+      "use": "@now/node-server"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/graphql",
+      "dest": "/server/index.ts"
+    }
+  ]
+}
