@@ -3,7 +3,8 @@ import Link from 'next/link';
 import Head from 'next/head';
 
 interface Props {
-  children: JSX.Element[];
+  // TODO: Figure out type that works here.
+  children: any;
 }
 
 function Layout({children}: Props) {
@@ -20,8 +21,8 @@ function Layout({children}: Props) {
             <a>Home</a>
           </Link>{' '}
           |{' '}
-          <Link href="/graphql">
-            <a>GraphQL</a>
+          <Link href="/about">
+            <a>About</a>
           </Link>
         </nav>
       </header>
