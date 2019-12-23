@@ -37,10 +37,10 @@ function Layout({children}: Props) {
             |{' '}
             <Link href="/about">
               <a>About</a>
-            </Link>
+            </Link>{' '}
             |{' '}
             <Link href="/account">
-              <a>About</a>
+              <a>Account</a>
             </Link>
           </nav>
         </header>
