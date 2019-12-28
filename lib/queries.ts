@@ -10,3 +10,16 @@ export const CURRENT_USER_QUERY = gql`
     }
   }
 `;
+
+export const TEAMS_QUERY = gql`
+  query teams {
+    teams {
+      _id
+      name
+      nickname
+      city
+      abr
+      league
+    }
+  }
+`;

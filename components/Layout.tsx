@@ -6,7 +6,6 @@ import clsx from 'clsx';
 import {makeStyles} from '@material-ui/core/styles';
 import {
   AppBar,
-  Container,
   Divider,
   List,
   ListItem,
@@ -22,7 +21,8 @@ import {
   AccountCircle as AccountIcon,
   ChevronLeft as ChevronLeftIcon,
   Menu as MenuIcon,
-  Home as HomeIcon
+  Home as HomeIcon,
+  SupervisorAccount as SupervisorAccountIcon
 } from '@material-ui/icons';
 import {CurrentUserQueryResponse} from '../lib/types';
 import {UserContext} from '../lib/user-context';
@@ -112,6 +112,16 @@ function Layout({children}: Props) {
               <AccountIcon />
             </ListItemIcon>
             <ListItemText primary={'Account'} />
+          </ListItem>
+        </div>
+      </Link>
+      <Link href="/admin">
+        <div onClick={() => setDrawerOpen(false)}>
+          <ListItem button>
+            <ListItemIcon>
+              <SupervisorAccountIcon />
+            </ListItemIcon>
+            <ListItemText primary={'Admin'} />
           </ListItem>
         </div>
       </Link>
