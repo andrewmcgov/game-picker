@@ -1,25 +1,24 @@
 import React from 'react';
+import {Container, Typography} from '@material-ui/core';
 import {UserContext} from '../lib/user-context';
-import AccountForms from '../components/AccountForms';
 import SignOut from '../components/SignOut';
 
 export default function AccountPage() {
   const user = React.useContext(UserContext);
 
-  return (
-    <div>
-      <h1>Account Page</h1>
+  if (!user) return null;
 
-      {user ? (
-        <>
-          <p>
-            Logged in as: <strong>{user.firstName}</strong>
-          </p>
-          <SignOut />
-        </>
-      ) : (
-        <AccountForms />
-      )}
-    </div>
+  return (
+    <Container maxWidth="lg">
+      <Typography component="h1" variant="h3">
+        Account
+      </Typography>
+
+      <p>
+        You are currently logged in as: <strong>{user.firstName}</strong>
+      </p>
+
+      <SignOut />
+    </Container>
   );
 }

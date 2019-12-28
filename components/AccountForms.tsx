@@ -1,9 +1,18 @@
 import React from 'react';
+import {Container, Grid, Link} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
 
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 
+const useStyles = makeStyles(theme => ({
+  links: {
+    margin: theme.spacing(1, 0)
+  }
+}));
+
 function AccountForms() {
+  const classes = useStyles();
   const [signUp, setSignUp] = React.useState(false);
 
   function handleFormChange(
@@ -15,38 +24,56 @@ function AccountForms() {
 
   if (signUp) {
     return (
-      <div className="account-forms__toggle">
+      <Container maxWidth="sm">
         <SignUp />
-        <p>
-          Already have an account? Click{' '}
-          <a
-            className="account-forms__toggle-link"
-            href=""
-            onClick={e => handleFormChange(e)}
-          >
-            here
-          </a>{' '}
-          to sign in!
-        </p>
-      </div>
+        <div className={classes.links}>
+          <Grid container>
+            <Grid item xs>
+              <Link href="#" variant="body2">
+                Forgot password?
+              </Link>
+            </Grid>
+            <Grid item>
+              <Link
+                href="#"
+                variant="body2"
+                onClick={(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) =>
+                  handleFormChange(e)
+                }
+              >
+                Already have an account? Sign in.
+              </Link>
+            </Grid>
+          </Grid>
+        </div>
+      </Container>
     );
   }
 
   return (
-    <div className="account-forms__toggle">
+    <Container maxWidth="sm">
       <SignIn />
-      <p>
-        Need an account? Click{' '}
-        <a
-          className="account-forms__toggle-link"
-          href=""
-          onClick={e => handleFormChange(e)}
-        >
-          here
-        </a>{' '}
-        to sign up!
-      </p>
-    </div>
+      <div className={classes.links}>
+        <Grid container>
+          <Grid item xs>
+            <Link href="#" variant="body2">
+              Forgot password?
+            </Link>
+          </Grid>
+          <Grid item>
+            <Link
+              href="#"
+              variant="body2"
+              onClick={(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) =>
+                handleFormChange(e)
+              }
+            >
+              Don't have an account? Sign up.
+            </Link>
+          </Grid>
+        </Grid>
+      </div>
+    </Container>
   );
 }
 

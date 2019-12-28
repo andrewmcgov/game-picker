@@ -1,5 +1,6 @@
 import * as React from 'react';
 import gql from 'graphql-tag';
+import {Button} from '@material-ui/core';
 import {useMutation} from '@apollo/react-hooks';
 
 import {CURRENT_USER_QUERY} from '../lib/queries';
@@ -16,13 +17,14 @@ function SignOut() {
   });
 
   return (
-    <button
-      className="button button-secondary"
+    <Button
       onClick={() => signOut()}
       disabled={loading}
+      variant="contained"
+      color="primary"
     >
       Sign out!
-    </button>
+    </Button>
   );
 }
 

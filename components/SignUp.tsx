@@ -1,6 +1,9 @@
 import * as React from 'react';
 import gql from 'graphql-tag';
 import {useMutation} from '@apollo/react-hooks';
+import {Avatar, Button, Grid, TextField, Typography} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
+import {LockOutlined as LockOutlinedIcon} from '@material-ui/icons';
 import Error from './Error';
 import {CURRENT_USER_QUERY} from '../lib/queries';
 
@@ -28,7 +31,28 @@ export const SIGN_UP_MUTATION = gql`
   }
 `;
 
+const useStyles = makeStyles(theme => ({
+  container: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  avatar: {
+    margin: '.5rem',
+    backgroundColor: theme.palette.secondary.main
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1)
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2)
+  }
+}));
+
 function SignUp() {
+  const classes = useStyles();
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
   const [email, setEmail] = React.useState('');
@@ -40,110 +64,132 @@ function SignUp() {
     refetchQueries: [{query: CURRENT_USER_QUERY}]
   });
 
-  function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    signUp({
-      variables: {
-        firstName,
-        lastName,
-        email,
-        password,
-        repeatPassword,
-        signupKey
-      }
-    });
+    try {
+      await signUp({
+        variables: {
+          firstName,
+          lastName,
+          email,
+          password,
+          repeatPassword,
+          signupKey
+        }
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   return (
-    <>
+    <div className={classes.container}>
+      <Avatar className={classes.avatar}>
+        <LockOutlinedIcon />
+      </Avatar>
+      <Typography component="h1" variant="h5">
+        Sign up
+      </Typography>
       {error && <Error error={error} />}
-      <div className="form-card account-form-card">
-        <h3 className="account-form-heading">Sign up!</h3>
-        <form
-          method="post"
-          onSubmit={e => handleFormSubmit(e)}
-          className="signin-form"
+      <form
+        method="post"
+        onSubmit={e => handleFormSubmit(e)}
+        className={classes.form}
+      >
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              autoComplete="fname"
+              name="firstName"
+              variant="outlined"
+              required
+              fullWidth
+              id="firstName"
+              label="First Name"
+              autoFocus
+              value={firstName}
+              onChange={e => setFirstName(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6}>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              id="lastName"
+              label="Last Name"
+              name="lastName"
+              autoComplete="lname"
+              value={lastName}
+              onChange={e => setLastName(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              name="repeat-password"
+              label="Repeat Password"
+              type="password"
+              id="repeat-password"
+              autoComplete="current-password"
+              value={repeatPassword}
+              onChange={e => setRepeatPassword(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              variant="outlined"
+              required
+              fullWidth
+              id="lastName"
+              label="Signup Key"
+              name="signup-key"
+              autoComplete="signup-key"
+              value={signupKey}
+              onChange={e => setSignupKey(e.target.value)}
+            />
+          </Grid>
+        </Grid>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
         >
-          <fieldset disabled={loading}>
-            <div className="form-input-pairing">
-              <label htmlFor="signin:firstName">
-                First name
-                <input
-                  type="text"
-                  name="firstName"
-                  placeholder="First name"
-                  id="signup:firstName"
-                  value={firstName}
-                  onChange={e => setFirstName(e.target.value)}
-                />
-              </label>
-              <label htmlFor="signin:lastName">
-                Last Name
-                <input
-                  type="text"
-                  name="lastName"
-                  placeholder="Last name"
-                  id="signup:lastName"
-                  value={lastName}
-                  onChange={e => setLastName(e.target.value)}
-                />
-              </label>
-            </div>
-            <label htmlFor="signin:email">
-              Email
-              <input
-                type="email"
-                name="email"
-                placeholder="email"
-                id="signup:email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-              />
-            </label>
-            <div className="form-input-pairing">
-              <label htmlFor="signin:password">
-                Password
-                <input
-                  type="password"
-                  name="password"
-                  placeholder="password"
-                  id="signup:password"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                />
-              </label>
-              <label htmlFor="signin:repeatPassword">
-                Repeat Password
-                <input
-                  type="password"
-                  name="repeatPassword"
-                  placeholder="Repeat password"
-                  id="signup:repeatPassword"
-                  value={repeatPassword}
-                  onChange={e => setRepeatPassword(e.target.value)}
-                />
-              </label>
-            </div>
-            <label htmlFor="signin:signupKey">
-              Singup Key
-              <input
-                type="text"
-                name="signupKey"
-                placeholder="Singup key"
-                id="signup:signupKey"
-                value={signupKey}
-                onChange={e => setSignupKey(e.target.value)}
-              />
-            </label>
-            <div className="account-form-buttons">
-              <button className="button button-primary" type="submit">
-                Sign up!
-              </button>
-            </div>
-          </fieldset>
-        </form>
-      </div>
-    </>
+          Sign Up
+        </Button>
+      </form>
+    </div>
   );
 }
 
