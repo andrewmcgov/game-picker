@@ -27,6 +27,7 @@ import {
 import {CurrentUserQueryResponse} from '../lib/types';
 import {UserContext} from '../lib/user-context';
 import {CURRENT_USER_QUERY} from '../lib/queries';
+import AccountForms from './AccountForms';
 
 interface Props {
   // TODO: Figure out type that works here.
@@ -35,12 +36,12 @@ interface Props {
 
 const drawerWidth = 240;
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   appBar: {
     position: 'relative'
   },
   main: {
-    marginTop: '2rem'
+    marginTop: theme.spacing(4)
   },
   drawer: {
     width: drawerWidth
@@ -51,11 +52,11 @@ const useStyles = makeStyles(() => ({
   drawerHeader: {
     display: 'flex',
     alignItems: 'center',
-    padding: '.5rem',
+    padding: theme.spacing(1),
     justifyContent: 'flex-end'
   },
   menuButton: {
-    marginRight: '2rem'
+    marginRight: theme.spacing(1)
   },
   hide: {
     display: 'none'
@@ -137,6 +138,13 @@ function Layout({children}: Props) {
     </Drawer>
   );
 
+  const mainMarkup =
+    user && user._id ? (
+      <main className={classes.main}>{loading ? loadingMarkup : children}</main>
+    ) : (
+      <AccountForms />
+    );
+
   return (
     <div>
       <Head>
@@ -155,11 +163,7 @@ function Layout({children}: Props) {
         <CssBaseline />
         {headerMarkup}
         {drawerMarkup}
-        <Container maxWidth="lg">
-          <main className={classes.main}>
-            {loading ? loadingMarkup : children}
-          </main>
-        </Container>
+        {mainMarkup}
       </UserContext.Provider>
     </div>
   );

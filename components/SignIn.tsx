@@ -1,6 +1,9 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import {useMutation} from '@apollo/react-hooks';
+import {Avatar, Button, TextField, Typography} from '@material-ui/core';
+import {makeStyles} from '@material-ui/core/styles';
+import {LockOutlined as LockOutlinedIcon} from '@material-ui/icons';
 
 import {CURRENT_USER_QUERY} from '../lib/queries';
 import Error from './Error';
@@ -15,60 +18,96 @@ const SIGN_IN_MUTATION = gql`
   }
 `;
 
+const useStyles = makeStyles(theme => ({
+  container: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  avatar: {
+    margin: '.5rem',
+    backgroundColor: theme.palette.secondary.main
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1)
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2)
+  }
+}));
+
 function SignIn() {
+  const classes = useStyles();
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [signIn, {loading, error}] = useMutation(SIGN_IN_MUTATION);
 
-  function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    signIn({
-      variables: {
-        email,
-        password
-      },
-      refetchQueries: [{query: CURRENT_USER_QUERY}]
-    });
+    try {
+      await signIn({
+        variables: {
+          email,
+          password
+        },
+        refetchQueries: [{query: CURRENT_USER_QUERY}]
+      });
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   return (
-    <div className="form-card account-form-card">
+    <div className={classes.container}>
+      <Avatar className={classes.avatar}>
+        <LockOutlinedIcon />
+      </Avatar>
+      <Typography component="h1" variant="h5">
+        Sign in
+      </Typography>
       {error && <Error error={error} />}
-      <h3 className="account-form-heading">Sign in!</h3>
       <form
         method="post"
         onSubmit={e => handleFormSubmit(e)}
-        className="signin-form"
+        className={classes.form}
       >
-        <fieldset disabled={loading}>
-          <label htmlFor="signin:email">
-            Email
-            <input
-              type="email"
-              name="email"
-              placeholder="email"
-              id="signin:email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-            />
-          </label>
-          <label htmlFor="signin:password">
-            Password
-            <input
-              type="password"
-              name="password"
-              placeholder="password"
-              id="signin:password"
-              value={password}
-              onChange={e => setPassword(e.target.value)}
-            />
-          </label>
-          <div className="account-form-buttons">
-            <button className="button button-primary" type="submit">
-              Sign in!
-            </button>
-          </div>
-        </fieldset>
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          id="email"
+          label="Email Address"
+          name="email"
+          autoComplete="email"
+          autoFocus
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+        />
+        <TextField
+          variant="outlined"
+          margin="normal"
+          required
+          fullWidth
+          name="password"
+          label="Password"
+          type="password"
+          id="password"
+          autoComplete="current-password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+        />
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+        >
+          Sign In
+        </Button>
       </form>
     </div>
   );
