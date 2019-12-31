@@ -1,4 +1,5 @@
 import React from 'react';
+import {useRouter} from 'next/router';
 import gql from 'graphql-tag';
 import {useMutation} from '@apollo/react-hooks';
 import {
@@ -14,9 +15,18 @@ import {LockOutlined as LockOutlinedIcon} from '@material-ui/icons';
 import {CURRENT_USER_QUERY} from '../lib/queries';
 import Error from './Error';
 
-const SIGN_IN_MUTATION = gql`
-  mutation SIGN_IN_MUTATION($email: String, $password: String) {
-    signIn(email: $email, password: $password) {
+const RESET_PASSWORD_MUTATION = gql`
+  mutation RESET_PASSWORD_MUTATION(
+    $password: String
+    $confirmPassword: String
+    $resetToken: String
+  ) {
+    resetPassword(
+      password: $password
+      confirmPassword: $confirmPassword
+      resetToken: $resetToken
+    ) {
+      _id
       firstName
       lastName
       email
@@ -41,25 +51,36 @@ const useStyles = makeStyles(theme => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2)
+  },
+  input: {
+    margin: theme.spacing(3, 0)
   }
 }));
 
-function SignIn() {
+function PasswordResetForm() {
   const classes = useStyles();
-  const [email, setEmail] = React.useState('');
+  const router = useRouter();
   const [password, setPassword] = React.useState('');
-  const [signIn, {loading, error}] = useMutation(SIGN_IN_MUTATION);
+  const [confirmPassword, setConfirmPassword] = React.useState('');
+  const [resetPassword, {loading, error}] = useMutation(
+    RESET_PASSWORD_MUTATION
+  );
 
   async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      await signIn({
+      const user = await resetPassword({
         variables: {
-          email,
-          password
+          password,
+          confirmPassword,
+          resetToken: router.query.resetToken
         },
         refetchQueries: [{query: CURRENT_USER_QUERY}]
       });
+
+      if (user.data.resetPassword) {
+        router.push('/account');
+      }
     } catch (err) {
       console.error(err);
     }
@@ -71,7 +92,7 @@ function SignIn() {
         <LockOutlinedIcon />
       </Avatar>
       <Typography component="h1" variant="h5">
-        Sign in
+        Reset Password
       </Typography>
       {error && <Error error={error} />}
       <form
@@ -79,32 +100,34 @@ function SignIn() {
         onSubmit={e => handleFormSubmit(e)}
         className={classes.form}
       >
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          id="email"
-          label="Email Address"
-          name="email"
-          autoComplete="email"
-          autoFocus
-          value={email}
-          onChange={e => setEmail(e.target.value)}
-        />
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          name="password"
-          label="Password"
-          type="password"
-          id="password"
-          autoComplete="current-password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
+        <div className={classes.input}>
+          <TextField
+            variant="outlined"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            value={password}
+            onChange={e => setPassword(e.target.value)}
+          />
+        </div>
+        <div className={classes.input}>
+          <TextField
+            variant="outlined"
+            required
+            fullWidth
+            name="repeat-password"
+            label="Repeat Password"
+            type="password"
+            id="repeat-password"
+            autoComplete="current-password"
+            value={confirmPassword}
+            onChange={e => setConfirmPassword(e.target.value)}
+          />
+        </div>
         <Button
           type="submit"
           fullWidth
@@ -113,7 +136,7 @@ function SignIn() {
           className={classes.submit}
           disabled={loading}
         >
-          Sign In
+          Reset Password
           {loading && <CircularProgress size={24} />}
         </Button>
       </form>
@@ -121,4 +144,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default PasswordResetForm;

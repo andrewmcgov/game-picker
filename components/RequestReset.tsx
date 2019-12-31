@@ -1,4 +1,5 @@
 import React from 'react';
+import {useRouter} from 'next/router';
 import gql from 'graphql-tag';
 import {useMutation} from '@apollo/react-hooks';
 import {
@@ -9,18 +10,16 @@ import {
   Typography
 } from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
-import {LockOutlined as LockOutlinedIcon} from '@material-ui/icons';
+import {
+  LockOutlined as LockOutlinedIcon,
+  Check as CheckIcon
+} from '@material-ui/icons';
 
-import {CURRENT_USER_QUERY} from '../lib/queries';
 import Error from './Error';
 
-const SIGN_IN_MUTATION = gql`
-  mutation SIGN_IN_MUTATION($email: String, $password: String) {
-    signIn(email: $email, password: $password) {
-      firstName
-      lastName
-      email
-    }
+const REQUEST_PASSWORD_RESET_MUTATION = gql`
+  mutation REQUEST_PASSWORD_RESET_MUTATION($email: String) {
+    requestReset(email: $email)
   }
 `;
 
@@ -35,34 +34,57 @@ const useStyles = makeStyles(theme => ({
     margin: '.5rem',
     backgroundColor: theme.palette.secondary.main
   },
+  check: {
+    margin: '.5rem',
+    backgroundColor: theme.palette.success.main
+  },
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1)
   },
   submit: {
     margin: theme.spacing(3, 0, 2)
+  },
+  input: {
+    margin: theme.spacing(3, 0)
   }
 }));
 
-function SignIn() {
+interface Props {
+  footerMarkup: JSX.Element;
+}
+
+function PasswordResetForm({footerMarkup}: Props) {
   const classes = useStyles();
   const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [signIn, {loading, error}] = useMutation(SIGN_IN_MUTATION);
+  const [resetPassword, {data, loading, error}] = useMutation(
+    REQUEST_PASSWORD_RESET_MUTATION
+  );
 
   async function handleFormSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     try {
-      await signIn({
+      await resetPassword({
         variables: {
-          email,
-          password
-        },
-        refetchQueries: [{query: CURRENT_USER_QUERY}]
+          email
+        }
       });
     } catch (err) {
       console.error(err);
     }
+  }
+
+  if (data && data.requestReset) {
+    return (
+      <div className={classes.container}>
+        <Avatar className={classes.check}>
+          <CheckIcon />
+        </Avatar>
+        <Typography component="h5" variant="h5">
+          Reset password email sent.
+        </Typography>
+      </div>
+    );
   }
 
   return (
@@ -71,7 +93,7 @@ function SignIn() {
         <LockOutlinedIcon />
       </Avatar>
       <Typography component="h1" variant="h5">
-        Sign in
+        Reset Password
       </Typography>
       {error && <Error error={error} />}
       <form
@@ -92,19 +114,7 @@ function SignIn() {
           value={email}
           onChange={e => setEmail(e.target.value)}
         />
-        <TextField
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          name="password"
-          label="Password"
-          type="password"
-          id="password"
-          autoComplete="current-password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
-        />
+
         <Button
           type="submit"
           fullWidth
@@ -113,12 +123,13 @@ function SignIn() {
           className={classes.submit}
           disabled={loading}
         >
-          Sign In
+          Request password reset
           {loading && <CircularProgress size={24} />}
         </Button>
       </form>
+      {footerMarkup}
     </div>
   );
 }
 
-export default SignIn;
+export default PasswordResetForm;

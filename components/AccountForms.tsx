@@ -2,6 +2,7 @@ import React from 'react';
 import {Container, Grid, Link} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 
+import RequestReset from './RequestReset';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 
@@ -14,12 +15,37 @@ const useStyles = makeStyles(theme => ({
 function AccountForms() {
   const classes = useStyles();
   const [signUp, setSignUp] = React.useState(false);
+  const [reset, setReset] = React.useState(false);
 
   function handleFormChange(
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) {
     e.preventDefault();
     setSignUp(signUp => !signUp);
+  }
+
+  if (reset) {
+    return (
+      <Container maxWidth="sm">
+        <RequestReset
+          footerMarkup={
+            <div className={classes.links}>
+              <Grid container>
+                <Grid item>
+                  <Link
+                    href="#"
+                    variant="body2"
+                    onClick={() => setReset(false)}
+                  >
+                    Already have an account? Sign in.
+                  </Link>
+                </Grid>
+              </Grid>
+            </div>
+          }
+        />
+      </Container>
+    );
   }
 
   if (signUp) {
@@ -29,7 +55,7 @@ function AccountForms() {
         <div className={classes.links}>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              <Link href="#" variant="body2" onClick={() => setReset(true)}>
                 Forgot password?
               </Link>
             </Grid>
@@ -56,7 +82,7 @@ function AccountForms() {
       <div className={classes.links}>
         <Grid container>
           <Grid item xs>
-            <Link href="#" variant="body2">
+            <Link href="#" variant="body2" onClick={() => setReset(true)}>
               Forgot password?
             </Link>
           </Grid>

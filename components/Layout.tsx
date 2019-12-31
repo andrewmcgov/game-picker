@@ -1,6 +1,7 @@
 import React from 'react';
 import {useQuery} from '@apollo/react-hooks';
 import Link from 'next/link';
+import {useRouter} from 'next/router';
 import Head from 'next/head';
 import clsx from 'clsx';
 import {makeStyles} from '@material-ui/core/styles';
@@ -64,6 +65,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function Layout({children}: Props) {
+  const router = useRouter();
   const classes = useStyles();
   const {data, loading} = useQuery<CurrentUserQueryResponse>(
     CURRENT_USER_QUERY
@@ -149,7 +151,7 @@ function Layout({children}: Props) {
   );
 
   const mainMarkup =
-    user && user._id ? (
+    (user && user._id) || router.pathname === '/reset' ? (
       <main className={classes.main}>{loading ? loadingMarkup : children}</main>
     ) : (
       <AccountForms />

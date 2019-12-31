@@ -22,7 +22,19 @@ const GAMES_QUERY = gql`
         abr
       }
       startTime
+      hasStarted
       week
+      picks {
+        _id
+        user {
+          _id
+          firstName
+          lastName
+        }
+        pick {
+          _id
+        }
+      }
     }
   }
 `;

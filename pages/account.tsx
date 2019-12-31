@@ -9,7 +9,7 @@ export default function AccountPage() {
   if (!user) return null;
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="sm">
       <Typography component="h1" variant="h3">
         Account
       </Typography>

@@ -20,7 +20,18 @@ export interface Game {
   home: Team;
   away: Team;
   startTime: string;
+  hasStarted: boolean;
   week: string;
+  picks: Pick[];
+}
+
+export interface Pick {
+  _id: string;
+  game: Game;
+  pick: Team;
+  user: User;
+  closed: boolean;
+  correct?: boolean;
 }
 
 export interface CurrentUserQueryResponse {

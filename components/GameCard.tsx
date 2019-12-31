@@ -15,6 +15,7 @@ import format from 'date-fns/format';
 import gql from 'graphql-tag';
 import {useMutation} from '@apollo/react-hooks';
 
+import {UserContext} from '../lib/user-context';
 import Error from './Error';
 import {Game} from '../lib/types';
 
@@ -27,6 +28,7 @@ const PICK_GAME_MUTATION = gql`
     makePick(game: $game, pick: $pick) {
       _id
       pick {
+        _id
         name
       }
     }
@@ -58,10 +60,20 @@ const useStyles = makeStyles(theme => ({
 
 export default function GameCard({game}: Props) {
   const classes = useStyles();
-  const [pick, setPick] = React.useState<string>('');
+  const user = React.useContext(UserContext);
+  const [pick, setPick] = React.useState<string>(getUserPickValue());
   const {home, away} = game;
 
   const [makePick, {data, loading, error}] = useMutation(PICK_GAME_MUTATION);
+
+  function getUserPickValue() {
+    if (user) {
+      const pick = game.picks.find(pick => pick.user._id === user._id);
+
+      return pick ? pick.pick._id : '';
+    }
+    return '';
+  }
 
   async function handlePickMutation(pickedTeamId: string) {
     try {

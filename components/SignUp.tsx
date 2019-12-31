@@ -1,7 +1,14 @@
 import * as React from 'react';
 import gql from 'graphql-tag';
 import {useMutation} from '@apollo/react-hooks';
-import {Avatar, Button, Grid, TextField, Typography} from '@material-ui/core';
+import {
+  Avatar,
+  Button,
+  CircularProgress,
+  Grid,
+  TextField,
+  Typography
+} from '@material-ui/core';
 import {makeStyles} from '@material-ui/core/styles';
 import {LockOutlined as LockOutlinedIcon} from '@material-ui/icons';
 import Error from './Error';
@@ -185,8 +192,10 @@ function SignUp() {
           variant="contained"
           color="primary"
           className={classes.submit}
+          disabled={loading}
         >
           Sign Up
+          {loading && <CircularProgress size={24} />}
         </Button>
       </form>
     </div>
