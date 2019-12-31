@@ -15,10 +15,22 @@ export interface Team {
   league: string;
 }
 
+export interface Game {
+  _id: string;
+  home: Team;
+  away: Team;
+  startTime: string;
+  week: string;
+}
+
 export interface CurrentUserQueryResponse {
   currentUser?: User;
 }
 
 export interface TeamsQueryResponse {
   teams?: Team[];
+}
+
+export interface GamesQueryResponse {
+  games?: Game[];
 }
