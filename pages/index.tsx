@@ -1,25 +1,16 @@
 import React from 'react';
-import {useQuery} from '@apollo/react-hooks';
-import {Container} from '@material-ui/core';
-import gql from 'graphql-tag';
+import {Container, Typography} from '@material-ui/core';
 
-const TEST_QUERY = gql`
-  query test {
-    testQuery
-  }
-`;
+import Feed from '../components/Feed';
 
 function IndexPage() {
-  const {data, loading, error} = useQuery(TEST_QUERY);
-
   return (
     <Container maxWidth="lg">
-      <h1>game-picker</h1>
-      <p>this will be the game picker</p>
+      <Typography component="h1" variant="h3">
+        Home
+      </Typography>
 
-      {loading && <p>Loading...</p>}
-      {error && <p>error...</p>}
-      {data && data.testQuery}
+      <Feed />
     </Container>
   );
 }
