@@ -9,8 +9,7 @@
     "deleteTeams": "node ./build/data/loadTeams.js --delete",
     "dev": "concurrently \"tsc --project tsconfig.server.json -w\" \"nodemon build/index.js\"",
     "build": "next build && tsc --project tsconfig.server.json",
-    "start": "NODE_ENV=production node build/index.js",
-    "postinstall": "build"
+    "start": "NODE_ENV=production node build/index.js"
   },
   "author": "",
   "license": "ISC",
