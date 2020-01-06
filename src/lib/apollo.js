@@ -133,7 +133,7 @@ function createApolloClient(initialState = {}) {
     link: new HttpLink({
       uri:
         process.env.NODE_ENV === 'development'
-          ? 'http://localhost:4000/graphql'
+          ? 'http://localhost:3000/graphql'
           : 'https://game-picker.now.sh/graphql', // Server URL (must be absolute)
       credentials: 'include', // Additional fetch() options like `credentials` or `headers`
       fetch

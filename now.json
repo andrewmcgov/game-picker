@@ -1,0 +1,11 @@
+{
+  "env": {
+    "MONGO_CONNECTION_STRING": "@mongo_connection_string",
+    "APP_SECRET": "@app_secret",
+    "SIGNUP_KEY": "@signup_key",
+    "MAIL_HOST": "@mail_host",
+    "MAIL_PORT": "@mail_port",
+    "MAIL_USER": "@mail_user",
+    "MAIL_PASS": "@mail_pass"
+  }
+}

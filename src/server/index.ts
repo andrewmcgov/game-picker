@@ -7,6 +7,7 @@ import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
 
 dotenv.config();
+const port = 3000;
 
 import './models/User.js';
 import './models/Team.js';
@@ -52,6 +53,6 @@ app.prepare().then(() => {
     await handle(req, res);
   });
 
-  server.listen(process.env.PORT);
-  console.log(`Running a GraphQL API server on port ${process.env.PORT}`);
+  server.listen(port);
+  console.log(`Running a GraphQL API server on port ${port}`);
 });
